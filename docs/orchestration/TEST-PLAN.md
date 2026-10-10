@@ -14,7 +14,7 @@
 | T08 | Wi-Fi/latência (futuro) | Medição no hardware | Limites ainda por definir | BLOQUEADO: sensor |
 | T09 | ESP32 USB sem sensor | Gravar sketch diagnóstico; ler mensagens a 115200 baud na COM3 | Gravação verificada e mensagens periódicas | PASSOU — COM3; ESP32-D0WD-V3; CPU 240 MHz; Flash 4 MB; 2026-10-10 |
 
-| T10 | Compilar firmware definitivo sem sensor | Gerar `config.h` privado e compilar `firmware/aventura_esp32/aventura_esp32.ino` no Arduino IDE 2.3.10/ESP32 core 2.0.17 | Compilação conclui sem erros; não usar Carregar | NÃO EXECUTADO |
+| T10 | Compilar firmware definitivo sem sensor | Gerar `config.h` privado e compilar `firmware/aventura_esp32/aventura_esp32.ino` no Arduino IDE 2.3.10/ESP32 core 2.0.17 | Compilação conclui sem erros; não usar Carregar | PASSOU — Arduino IDE mostra 363885 bytes (27%) Flash e 25804 bytes (7%) RAM, sem erros; não foi gravado |
 
 ## Registro por sessão
 - Data, branch e commit:
@@ -59,3 +59,10 @@
 - A saída do sketch após reset exibiu `Modelo do chip: ESP32-D0WD-V3`, `Frequencia CPU: 240 MHz` e `Memoria Flash: 4 MB`.
 - USB/COM3 permanece com mensagens periódicas `ESP32 ativo - USB funcionando`.
 - Próximo teste T10: gerar configuração local USB sem credenciais Wi-Fi e **verificar somente a compilação** do firmware original; não gravar sem sensor.
+
+## Sessão — 2026-10-10 — T10 compilação firmware do jogo
+- Operador executou `py -3 tools/prepare_esp32.py --sda 21 --scl 22`; comando confirmou geração de `config.h` e pareamento local (conteúdo privado não compartilhado).
+- Arduino IDE 2.3.10, `ESP32 Dev Module`, Espressif core 2.0.17, firmware `firmware/aventura_esp32/aventura_esp32.ino`; verificação/compilação concluída sem erro visível.
+- Uso informado pelo compilador: 363885 bytes (27%) da região de programa 1310720 bytes; variáveis globais 25804 bytes (7%) de 327680 bytes de RAM.
+- **Importante:** não houve gravação do firmware definitivo; o ESP32 mantém sketch de diagnóstico USB. Não foi testado reconhecimento de IMU, saltos reais ou transporte de dados ao jogo.
+- Próximo: após chegada do MPU-6500, conferir pinout e tensão do breakout, conectar com energia desligada, gravar firmware e validar WHO_AM_I e pacotes de medidas antes de ligar receptor ao Godot.
