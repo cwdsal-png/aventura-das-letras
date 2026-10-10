@@ -12,6 +12,7 @@
 | T06 | Salto simulado | Testes Godot `sensor_game_jump` etc. da suíte | Eventos geram salto | PASSOU — `sensor_game_jump`, 8/8 saltos repetidos e timeout Wi-Fi, todos sintéticos (`physical_sensor:false`) |
 | T07 | MPU físico (futuro) | Scanner I2C e registro WHO_AM_I | Chip reconhecido | BLOQUEADO: sensor |
 | T08 | Wi-Fi/latência (futuro) | Medição no hardware | Limites ainda por definir | BLOQUEADO: sensor |
+| T09 | ESP32 USB sem sensor | Gravar sketch diagnóstico; ler mensagens a 115200 baud na COM3 | Gravação verificada e mensagens periódicas | PASSOU — Windows 11, COM3, firmware de diagnóstico, 2026-10-10 |
 
 ## Registro por sessão
 - Data, branch e commit:
@@ -45,3 +46,9 @@
 - **Pendência técnica:** algumas execuções Godot emitiram `ObjectDB instances were leaked at exit` e `resources still in use at exit` apesar de terminarem como aprovadas. Investigar cleanup e vazamento no encerramento antes de considerar qualidade de recursos concluída.
 - **Pendência de Git local:** `game/project.godot` teve chave `window/size/mode=2` reordenada e `window/stretch/mode="disabled"` removida na execução do editor, junto de mudanças nos `.import`. Não versionar/restaurar sem decisão específica.
 - Ainda aguardando: confirmação manual das teclas individuais T03; sensor MPU real e avaliação Wi-Fi física T07/T08.
+
+## Sessão — 2026-10-10 — ESP32 USB de bancada
+- Arduino IDE 2.3.10; pacote Espressif `esp32` 2.0.17; placa selecionada provisoriamente `ESP32 Dev Module`; CP2102 COM3 reconhecido após instalação do driver.
+- Sketch `teste_usb_esp32`: gravação concluída e verificada por hash; monitor serial 115200 exibiu mensagens `ESP32 ativo - USB funcionando` de forma repetida.
+- Estado: PASSOU somente comunicação USB/execução do sketch de teste; não inferir modelo exato, saúde I²C, compatibilidade do MPU, salto real ou envio ao Godot.
+- Próximo: identificar chip pelo cabeçalho emitido pelo sketch; aguardar MPU-6500 para teste elétrico e firmware oficial, ou compilar offline após gerar configurações privadas.
