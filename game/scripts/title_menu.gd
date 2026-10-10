@@ -14,6 +14,7 @@ var stage_title: Label
 var stage_name: Label
 var tips: Label
 var profile_buttons: Array=[]
+var guest_reset_button: Button
 var character_buttons: Array=[]
 var actors: Array=[]
 var actions: Array=[]
@@ -35,14 +36,18 @@ func _ready():
  tagline=make_label("PULE. DESCUBRA. BRINQUE.",15,Color("fbf4df"))
  profile_title=make_label("QUEM VAI BRINCAR?",13,Color("fbf4df"))
  character_title=make_label("ESCOLHA SEU COMPANHEIRO",13,Color("fbf4df"))
- for p in [["joao","João Miguel"],["luna","Luna"],["convidado","Convidado"]]:
+ for p in [["filha","Filha"],["papai","Papai"],["mamae","Mamãe"],["convidado","Convidado"]]:
   var selected=Data.state.selected_profile==p[0]
   var b=host.button(("● " if selected else "")+p[1],func():Data.select_profile(p[0]);host.show_menu())
   decorate_button(b,Color("fbf4df") if selected else Color("326855"),not selected,selected)
   board.add_child(b);profile_buttons.append(b)
- for i in range(4):
+ guest_reset_button=host.button("Reiniciar convidado",func():host.show_guest_reset_confirmation())
+ decorate_button(guest_reset_button,Color("e8ebd7"),false,false)
+ guest_reset_button.visible=Data.state.selected_profile=="convidado";board.add_child(guest_reset_button)
+ for i in Data.SELECTABLE_CHARACTER_INDICES:
   var c=Data.CHARACTERS[i];var selected=int(Data.profile().character)==i
-  var b=host.button(c.name,func():Data.profile().character=i;Data.save_progress();host.show_menu())
+  var character_label=["Filha","Papai","Mamãe"][Data.SELECTABLE_CHARACTER_INDICES.find(i)]
+  var b=host.button(character_label,func():Data.profile().character=i;Data.save_progress();host.show_menu())
   decorate_button(b,Color("ffe1a0") if selected else Color(0.98,0.96,0.86,0.91),false,selected)
   b.alignment=HORIZONTAL_ALIGNMENT_CENTER;board.add_child(b);character_buttons.append(b)
   var actor=Actor.new();actor.character_id=c.id;actor.active=false;b.add_child(actor)
@@ -116,7 +121,8 @@ func arrange():
  var right_x=left_x+width-right_width if wide else (size.x-right_width)/2
  var logo_h=120*u
  var card_h=144*u if wide else 113*u
- var hero_h=logo_h+104*u+card_h+40*u
+ var guest_extra=42*u if guest_reset_button.visible else 0.0
+ var hero_h=logo_h+104*u+card_h+40*u+guest_extra
  var action_h=maxf(46,54*u)
  var right_h=58*u+action_h*4+10*u*3+50*u+46*u
  var content_h=maxf(hero_h,right_h)+40*u if wide else hero_h+right_h+36*u
@@ -126,14 +132,16 @@ func arrange():
  place(tagline,Rect2(left_x,top+logo_h,left_width,24*u))
  var y=top+logo_h+34*u
  place(profile_title,Rect2(left_x,y,left_width,20*u));y+=24*u
- var gap=8*u;var pw=(left_width-gap*2)/3
- for i in range(3):
+ var gap=8*u;var pw=(left_width-gap*3)/4
+ for i in range(4):
   place(profile_buttons[i],Rect2(left_x+i*(pw+gap),y,pw,37*u))
   profile_buttons[i].add_theme_font_size_override("font_size",maxi(12,int(15*u)))
- y+=48*u
+ y+=45*u
+ if guest_reset_button.visible:
+  place(guest_reset_button,Rect2(left_x,y,left_width,36*u));y+=42*u
  place(character_title,Rect2(left_x,y,left_width,20*u));y+=25*u
- var cw=(left_width-gap*3)/4
- for i in range(4):
+ var cw=(left_width-gap*2)/3
+ for i in range(3):
   var b=character_buttons[i]
   b.add_theme_font_size_override("font_size",maxi(11,int(13*u)))
   b.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
