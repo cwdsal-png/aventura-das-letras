@@ -12,7 +12,9 @@
 | T06 | Salto simulado | Testes Godot `sensor_game_jump` etc. da suíte | Eventos geram salto | PASSOU — `sensor_game_jump`, 8/8 saltos repetidos e timeout Wi-Fi, todos sintéticos (`physical_sensor:false`) |
 | T07 | MPU físico (futuro) | Scanner I2C e registro WHO_AM_I | Chip reconhecido | BLOQUEADO: sensor |
 | T08 | Wi-Fi/latência (futuro) | Medição no hardware | Limites ainda por definir | BLOQUEADO: sensor |
-| T09 | ESP32 USB sem sensor | Gravar sketch diagnóstico; ler mensagens a 115200 baud na COM3 | Gravação verificada e mensagens periódicas | PASSOU — Windows 11, COM3, firmware de diagnóstico, 2026-10-10 |
+| T09 | ESP32 USB sem sensor | Gravar sketch diagnóstico; ler mensagens a 115200 baud na COM3 | Gravação verificada e mensagens periódicas | PASSOU — COM3; ESP32-D0WD-V3; CPU 240 MHz; Flash 4 MB; 2026-10-10 |
+
+| T10 | Compilar firmware definitivo sem sensor | Gerar `config.h` privado e compilar `firmware/aventura_esp32/aventura_esp32.ino` no Arduino IDE 2.3.10/ESP32 core 2.0.17 | Compilação conclui sem erros; não usar Carregar | NÃO EXECUTADO |
 
 ## Registro por sessão
 - Data, branch e commit:
@@ -52,3 +54,8 @@
 - Sketch `teste_usb_esp32`: gravação concluída e verificada por hash; monitor serial 115200 exibiu mensagens `ESP32 ativo - USB funcionando` de forma repetida.
 - Estado: PASSOU somente comunicação USB/execução do sketch de teste; não inferir modelo exato, saúde I²C, compatibilidade do MPU, salto real ou envio ao Godot.
 - Próximo: identificar chip pelo cabeçalho emitido pelo sketch; aguardar MPU-6500 para teste elétrico e firmware oficial, ou compilar offline após gerar configurações privadas.
+
+## Sessão — 2026-10-10 — identificação da placa de bancada
+- A saída do sketch após reset exibiu `Modelo do chip: ESP32-D0WD-V3`, `Frequencia CPU: 240 MHz` e `Memoria Flash: 4 MB`.
+- USB/COM3 permanece com mensagens periódicas `ESP32 ativo - USB funcionando`.
+- Próximo teste T10: gerar configuração local USB sem credenciais Wi-Fi e **verificar somente a compilação** do firmware original; não gravar sem sensor.
