@@ -5,6 +5,7 @@
 - Placa futura: ESP32-C3 SuperMini (não presumir carregador de bateria embarcado).
 - Também disponíveis: ESP8266 NodeMCU/LoLin, ESP-01, protoboard, jumpers e cabos.
 - MPU-6500/GY-6500: em trânsito, não disponível para testes físicos no marco M1/M2.
+- **Bancada USB Windows 11 — 2026-10-10:** driver Silicon Labs CP210x reconhecido na COM3; Arduino IDE 2.3.10 com core Espressif ESP32 2.0.17, alvo provisório `ESP32 Dev Module`; sketch de diagnóstico gravado (`Hash of data verified`, reset RTS); monitor serial em 115200 baud exibiu repetidamente `ESP32 ativo - USB funcionando`. Modelo exato do chip não foi capturado na imagem enviada. **Firmware definitivo e barramento I²C ainda não testados.**
 - Baterias, acessórios e demais componentes: informados como existentes, sem inventário quantitativo validado.
 
 ## Montagem prevista V1 (após chegada do sensor)
