@@ -7,7 +7,7 @@
 | T01 | Git/Python | `git --version`, `py -3 --version` | Comandos respondem | PASSOU — informado pelo operador (Git 2.54.0, Python 3.14.5) |
 | T02 | Godot | Abrir `game/project.godot` no Godot 4.7.2 e F5 | Menu e atividade carregam | PASSOU — jogo aberto e jogável, informado pelo operador |
 | T03 | Teclado | Andar com A/D e pular com Espaço | Controle funcional | A CONFIRMAR — operador conseguiu jogar, mas não detalhou cada tecla |
-| T04 | Publicação | `py -3 tools/check_publication.py` | Código de saída zero | NÃO EXECUTADO |
+| T04 | Publicação | `py -3 tools/check_publication.py` | Código de saída zero | PASSOU — operador relatou 393 arquivos, 74,2 MiB, 0 achados (10/10/2026) |
 | T05 | Automação | `py -3 tools/run_tests.py` após definir `GODOT_BIN` | Suíte completa passa | NÃO EXECUTADO |
 | T06 | Salto simulado | Testes Godot `sensor_game_jump` etc. da suíte | Eventos geram salto | NÃO EXECUTADO |
 | T07 | MPU físico (futuro) | Scanner I2C e registro WHO_AM_I | Chip reconhecido | BLOQUEADO: sensor |
@@ -28,3 +28,10 @@
 - Confirmados: Git 2.54.0, Python 3.14.5, projeto importado, jogo iniciado com F5 e partida jogável.
 - Ainda não confirmados: teste individual das teclas A/D/Espaço/Esc, branch local ativa no momento do jogo, suite automatizada e caminho do executável Godot.
 - Próxima ação: configurar `GODOT_BIN` na sessão PowerShell e executar `check_publication.py` e `run_tests.py`; registrar saídas antes de mudar estado de T04–T06.
+
+## Sessão — 2026-10-10 — atualização de verificação de publicação
+- Branch local: `chore/orquestrador-windows11-v1`, com tracking de origin configurado.
+- `git pull --ff-only`: concluído; documentação TEST-PLAN atualizada.
+- `py -3 tools/check_publication.py`: `Publication check: 393 files, 74.2 MiB, 0 findings.`
+- **Atenção:** após abrir o Godot, o Git relatou modificações locais em `game/project.godot` e vários `game/art/*.import` e `game/audio/*.import`. Origem exata a verificar por `git diff` antes de restaurar ou versionar. Não foi executada limpeza destrutiva.
+- Próximo: identificar caminho do Godot, examinar diffs locais e rodar `py -3 tools/run_tests.py` com `GODOT_BIN` configurado. Não atribuir aprovação T05/T06 sem logs.
