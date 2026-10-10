@@ -7,7 +7,7 @@ from godot_runtime import ROOT, find_godot
 # Hardware and screenshot labs run separately.
 GODOT_TESTS = ["curriculum", "speedrun", "gentle_flow",
                "powers_continuity", "adventure_terrain", "lava_jump", "player_fast_fall", "respawn_collectibles",
-               "sensor_game_jump", "sensor_repeat_jumps", "sensor_wifi_timeout", "answer_feedback", "acceptance"]
+               "sensor_game_jump", "sensor_repeat_jumps", "sensor_wifi_timeout", "answer_feedback", "acceptance", "family_profiles"]
 
 def run(command, timeout=360):
     subprocess.run(command, cwd=ROOT, check=True, timeout=timeout)
