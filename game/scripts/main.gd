@@ -147,6 +147,24 @@ func show_menu():
  menu_buttons=[]
  var title_screen=TitleMenu.new();title_screen.host=self;menu=title_screen;add_child(menu)
 
+func show_guest_reset_confirmation():
+ if Data.state.selected_profile!="convidado":return
+ screen="guest_reset_confirmation"
+ var v=new_overlay("Reiniciar convidado?", "Esta ação apagará apenas as descobertas e o progresso de Convidado. Filha, Papai e Mamãe não serão alterados.")
+ v.add_child(button("Cancelar",func():show_menu(),true))
+ v.add_child(button("Sim, reiniciar convidado",func():
+  if Data.reset_guest_progress():
+   show_menu()
+  else:
+   show_guest_reset_error()))
+ focus_first()
+
+func show_guest_reset_error():
+ screen="guest_reset_error"
+ var v=new_overlay("Não foi possível reiniciar", "O progresso anterior de Convidado foi mantido. Verifique as permissões de gravação.")
+ v.add_child(button("Voltar",func():show_menu(),true))
+ focus_first()
+
 func start_game(continuing=false, carry: Dictionary={}):
  if not continuing:
   run_clock.reset();session_sections=0;session_discoveries=0;segment_started_ms=0

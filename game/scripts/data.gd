@@ -9,7 +9,11 @@ const CHARACTERS = [
 const Powers=preload("res://scripts/powers.gd")
 const DEFAULT_KEYS = {"move_left":KEY_A,"move_right":KEY_D,"jump":KEY_SPACE,"power":KEY_E,"power_two":KEY_Q,"pause":KEY_ESCAPE,"repeat_instruction":KEY_R,"help":KEY_H}
 const MAX_LIVES=3
-var state: Dictionary = {"version":2,"selected_profile":"joao","profiles":{},"keys":{},"voice":true,"effects":true,"voice_volume":85}
+# Índices de sprites: 1=criança, 2=pai, 3=mãe (arte original provisória).
+# O sprite 0 continua no catálogo para preservar dados e testes legados.
+const FAMILY_PROFILE_IDS=["filha","papai","mamae","convidado"]
+const SELECTABLE_CHARACTER_INDICES=[1,2,3]
+var state: Dictionary = {"version":2,"selected_profile":"filha","profiles":{},"keys":{},"voice":true,"effects":true,"voice_volume":85}
 var save_path="user://progress.json"
 var activities: Array=[]
 var stages: Array=[]
@@ -41,8 +45,12 @@ func load_progress():
     migration_source=path;decoded=migrate_v1(decoded)
    state.merge(decoded,true)
    break
- for id in ["joao","luna","convidado"]:
+ # Preservar perfis legados no arquivo sem atribuí-los a alguém da família.
+ for id in FAMILY_PROFILE_IDS:
   if not state.profiles.has(id):state.profiles[id]=fresh_profile()
+  if int(state.profiles[id].character) not in SELECTABLE_CHARACTER_INDICES:
+   state.profiles[id].character=SELECTABLE_CHARACTER_INDICES[0]
+ if state.selected_profile not in FAMILY_PROFILE_IDS:state.selected_profile="filha"
  activities=current_stage().activities
 
 func read_json(path: String):
@@ -59,7 +67,8 @@ func valid_state(value) -> bool:
  if value.version!=int(value.version) or int(value.version) not in [1,2]:return false
  if not value.get("profiles") is Dictionary or not value.get("keys",{}) is Dictionary:return false
  if value.has("continuous") and not value.continuous is bool:return false
- if value.get("selected_profile","joao") not in ["joao","luna","convidado"]:return false
+ # Perfis antigos são aceitos na leitura para preservar salvamentos existentes.
+ if value.get("selected_profile","joao") not in ["joao","luna"]+FAMILY_PROFILE_IDS:return false
  for action in value.keys:
   if action not in DEFAULT_KEYS or not numeric(value.keys[action]):return false
  for id in value.profiles:
@@ -120,7 +129,7 @@ func equip_power(slot: int, id: String) -> bool:
  return save_progress()
 
 func fresh_profile() -> Dictionary:
- return {"character":0,"attempts":[],"stage_id":"alfabeto_01","stages":{},"completed_stages":[]}
+ return {"character":SELECTABLE_CHARACTER_INDICES[0],"attempts":[],"stage_id":"alfabeto_01","stages":{},"completed_stages":[]}
 
 func migrate_v1(value: Dictionary) -> Dictionary:
  var result=value.duplicate(true);result.version=2
@@ -146,8 +155,20 @@ func round_progress() -> Dictionary:
  return p.stages[p.stage_id]
 
 func select_profile(id: String):
- if id not in ["joao","luna","convidado"]:return
+ if id not in FAMILY_PROFILE_IDS:return
  state.selected_profile=id;activities=current_stage().activities;save_progress()
+
+func reset_guest_progress() -> bool:
+ # A confirmação é responsabilidade da interface. Este método é restrito
+ # ao perfil Convidado e preserva perfis familiares e legados.
+ if state.selected_profile!="convidado" or speedrun_active:return false
+ var previous=state.profiles.convidado
+ state.profiles.convidado=fresh_profile()
+ activities=current_stage().activities
+ if save_progress():return true
+ state.profiles.convidado=previous
+ activities=current_stage().activities
+ return false
 
 func choose_stage(id: String) -> bool:
  if id not in stage_index:return false
