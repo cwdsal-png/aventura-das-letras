@@ -106,10 +106,11 @@ func run():
  var original=JSON.stringify(legacy)
  var file=FileAccess.open(data.save_path,FileAccess.WRITE);file.store_string(original);file.close()
  data.load_progress()
- check(data.state.version==2 and data.profile().character==3,"v1 migrates to v2 preserving character")
- check(data.profile().stage_id=="jardim_inicio" and data.round_progress().checkpoint==1110,"unfinished old stage resumes at its checkpoint")
- check(data.round_progress().completed==["letra_a","letra_m"] and data.round_progress().power_available,"v1 discoveries and unspent power preserved")
- check(data.profile().attempts.size()==1 and not data.state.voice,"v1 attempts and settings preserved")
+ var migrated=data.state.profiles.joao
+ check(data.state.version==2 and migrated.character==3 and data.state.selected_profile=="filha","v1 migrates to v2 preserving old character and selecting new family profile")
+ check(migrated.stage_id=="jardim_inicio" and migrated.stages.jardim_inicio.checkpoint==1110,"unfinished legacy stage and checkpoint preserved")
+ check(migrated.stages.jardim_inicio.completed==["letra_a","letra_m"] and migrated.stages.jardim_inicio.power_available,"v1 discoveries and unspent power preserved")
+ check(migrated.attempts.size()==1 and not data.state.voice,"v1 attempts and settings preserved")
  check(data.save_progress(),"migrated save writes successfully")
  check(FileAccess.get_file_as_string(data.save_path+".v1.bak")==original,"original v1 save preserved byte-for-byte")
  if data.profile().stages.has("jardim_inicio"):
